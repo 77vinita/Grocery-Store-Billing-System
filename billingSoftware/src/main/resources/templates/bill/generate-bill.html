@@ -1,0 +1,636 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Bill</title>
+    <script>
+        let products = [];
+
+        async function fetchProducts() {
+            try {
+                const response = await fetch("http://localhost:9090/products/list");
+                products = await response.json();
+                console.log("Fetched products:", products);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        }
+
+        async function updateStock(productId, quantity) {
+            await fetch(`http://localhost:9090/products/${productId}/updateStock?quantity=${quantity}`, {
+                method: "PUT"
+            });
+        }
+
+        async function populateDropdown() {
+            await fetchProducts();
+            const options = products.map(p => `<option value="${p.id}" data-price="${p.price}" data-stock="${p.stock}">${p.name} (₹${p.price}, Stock: ${p.stock})</option>`).join("");
+            return options;
+        }
+
+        async function addProductRow() {
+            const tbody = document.querySelector("#productTable tbody");
+            const row = document.createElement("tr");
+
+            const productOptions = await populateDropdown();
+
+            row.innerHTML = `
+                <td>
+                    <select onchange="updatePrice(this)">
+                        <option value="" disabled selected>Select Product</option>
+                        ${productOptions}
+                    </select>
+                </td>
+                <td><input type="number" min="1" value="1" onchange="updateTotal(this)" disabled></td>
+                <td class="price">₹0</td>
+                <td class="total">₹0</td>
+                <td><button onclick="removeRow(this)">❌ Remove</button></td>
+            `;
+            tbody.appendChild(row);
+        }
+
+        function updatePrice(select) {
+            const row = select.closest("tr");
+            const priceCell = row.querySelector(".price");
+            const totalCell = row.querySelector(".total");
+            const quantityInput = row.querySelector("input");
+
+            const price = parseFloat(select.selectedOptions[0].dataset.price);
+            priceCell.textContent = `₹${price}`;
+            quantityInput.disabled = false;
+            updateTotal(quantityInput);
+        }
+
+        function updateTotal(input) {
+            const row = input.closest("tr");
+            const price = parseFloat(row.querySelector(".price").textContent.replace("₹", ""));
+            const quantity = parseInt(input.value, 10);
+            row.querySelector(".total").textContent = `₹${price * quantity}`;
+        }
+
+        function removeRow(button) {
+            button.closest("tr").remove();
+        }
+
+        async function saveBill() {
+            const customerName = document.getElementById("customerName").value;
+            const customerEmail = document.getElementById("customerEmail").value;
+            const billDate = document.getElementById("billDate").value;
+
+            if (!customerName || !customerEmail || !billDate) {
+                alert("Please fill all details.");
+                return;
+            }
+
+            const rows = document.querySelectorAll("#productTable tbody tr");
+            const billProducts = [];
+
+            for (const row of rows) {
+                const select = row.querySelector("select");
+                const quantity = parseInt(row.querySelector("input").value, 10);
+                const productId = parseInt(select.value, 10);
+                const productName = select.selectedOptions[0].text.split(" (")[0];
+                const price = parseFloat(row.querySelector(".price").textContent.replace("₹", ""));
+
+                billProducts.push({ id: productId, name: productName, quantity, price });
+
+                // Update stock in database
+                await updateStock(productId, quantity);
+            }
+
+            if (billProducts.length === 0) {
+                alert("Add at least one product.");
+                return;
+            }
+
+            localStorage.setItem("customerName", customerName);
+            localStorage.setItem("customerEmail", customerEmail);
+            localStorage.setItem("billDate", billDate);
+            localStorage.setItem("products", JSON.stringify(billProducts));
+
+            alert("Bill saved successfully!");
+        }
+    </script>
+</head>
+<body onload="fetchProducts()">
+
+    <h2>Generate Bill</h2>
+
+    <label>Customer Name: <input type="text" id="customerName"></label>
+    <label>Customer Email: <input type="email" id="customerEmail"></label>
+    <label>Bill Date: <input type="date" id="billDate"></label>
+
+    <h3>Products</h3>
+    <table id="productTable">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price (₹)</th>
+                <th>Total (₹)</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <button onclick="addProductRow()">➕ Add Product</button>
+    <button onclick="saveBill()">💾 Save Bill</button>
+    <button onclick="window.location.href='/bill/bill.html'">📜 View Bill</button>
+
+</body>
+</html>
+ -->
+ 
+ 
+ <!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Bill</title>
+    <script>
+        let products = [];
+
+        async function fetchProducts() {
+            try {
+                const response = await fetch("http://localhost:9090/products/list");
+                products = await response.json();
+                console.log("Fetched products:", products);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        }
+
+        async function updateStock(productId, quantity) {
+            await fetch(`http://localhost:9090/products/${productId}/updateStock?quantity=${quantity}`, {
+                method: "PUT"
+            });
+        }
+
+        async function populateDropdown() {
+            await fetchProducts();
+            const options = products.map(p => `<option value="${p.id}" data-price="${p.price}" data-stock="${p.stock}">${p.name} (₹${p.price}, Stock: ${p.stock})</option>`).join("");
+            return options;
+        }
+
+        async function addProductRow() {
+            const tbody = document.querySelector("#productTable tbody");
+            const row = document.createElement("tr");
+
+            const productOptions = await populateDropdown();
+
+            row.innerHTML = `
+                <td>
+                    <select onchange="updatePrice(this)">
+                        <option value="" disabled selected>Select Product</option>
+                        ${productOptions}
+                    </select>
+                </td>
+                <td><input type="number" min="1" value="1" onchange="updateTotal(this)" disabled></td>
+                <td class="price">₹0</td>
+                <td class="total">₹0</td>
+                <td><button onclick="removeRow(this)">❌ Remove</button></td>
+            `;
+            tbody.appendChild(row);
+        }
+
+        function updatePrice(select) {
+            const row = select.closest("tr");
+            const priceCell = row.querySelector(".price");
+            const totalCell = row.querySelector(".total");
+            const quantityInput = row.querySelector("input");
+
+            const price = parseFloat(select.selectedOptions[0].dataset.price);
+            priceCell.textContent = `₹${price}`;
+            quantityInput.disabled = false;
+            updateTotal(quantityInput);
+        }
+
+        function updateTotal(input) {
+            const row = input.closest("tr");
+            const price = parseFloat(row.querySelector(".price").textContent.replace("₹", ""));
+            const quantity = parseInt(input.value, 10);
+            row.querySelector(".total").textContent = `₹${price * quantity}`;
+        }
+
+        function removeRow(button) {
+            button.closest("tr").remove();
+        }
+
+        async function saveBill() {
+            const customerName = document.getElementById("customerName").value;
+            const customerEmail = document.getElementById("customerEmail").value;
+            const billDate = document.getElementById("billDate").value;
+            const paymentMethod = document.getElementById("paymentMethod").value;  // Payment method from the dropdown
+
+            if (!customerName || !customerEmail || !billDate || !paymentMethod) {
+                alert("Please fill all details.");
+                return;
+            }
+
+            const rows = document.querySelectorAll("#productTable tbody tr");
+            const billProducts = [];
+
+            for (const row of rows) {
+                const select = row.querySelector("select");
+                const quantity = parseInt(row.querySelector("input").value, 10);
+                const productId = parseInt(select.value, 10);
+                const productName = select.selectedOptions[0].text.split(" (")[0];
+                const price = parseFloat(row.querySelector(".price").textContent.replace("₹", ""));
+
+                billProducts.push({ id: productId, name: productName, quantity, price });
+
+                // Update stock in database
+                await updateStock(productId, quantity);
+            }
+
+            if (billProducts.length === 0) {
+                alert("Add at least one product.");
+                return;
+            }
+
+            localStorage.setItem("customerName", customerName);
+            localStorage.setItem("customerEmail", customerEmail);
+            localStorage.setItem("billDate", billDate);
+            localStorage.setItem("paymentMethod", paymentMethod);  // Store the payment method
+            localStorage.setItem("products", JSON.stringify(billProducts));
+
+            if (paymentMethod === "UPI") {
+            	window.location.href = `bills/razorPay.html?amount=${totalAmount}`;
+
+            } else {
+                alert("Bill saved successfully!");
+            }
+
+        }
+    </script>
+</head>
+<body onload="fetchProducts()">
+
+    <h2>Generate Bill</h2>
+
+    <label>Customer Name: <input type="text" id="customerName"></label>
+    <label>Customer Email: <input type="email" id="customerEmail"></label>
+    <label>Bill Date: <input type="date" id="billDate"></label>
+    
+    Payment method dropdown
+    <label>Payment Method:
+        <select id="paymentMethod">
+            <option value="" disabled selected>Select Payment Method</option>
+            <option value="Cash">Cash</option>
+            <option value="UPI">UPI</option>
+        </select>
+    </label>
+
+    <h3>Products</h3>
+    <table id="productTable">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price (₹)</th>
+                <th>Total (₹)</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <button onclick="addProductRow()">➕ Add Product</button>
+    <button onclick="saveBill()">💾 Save Bill</button>
+    <button onclick="window.location.href='/bill/bill.html'">📜 View Bill</button>
+
+</body>
+</html>
+ -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generate Bill</title>
+<style>
+body {
+	font-family: Arial, sans-serif;
+	margin: 20px;
+	padding: 20px;
+	background-color: #f8f9fa;
+}
+
+h2, h3 {
+	color: #2e7d32;
+}
+
+label {
+	display: block;
+	margin: 10px 0;
+}
+
+input, select {
+	padding: 8px;
+	width: 100%;
+	max-width: 400px;
+	margin-top: 5px;
+	border: 1px solid #ced4da;
+	border-radius: 5px;
+}
+
+button {
+	margin: 10px 5px;
+	padding: 10px 15px;
+	border: none;
+	border-radius: 5px;
+	background-color: #2e7d32;
+	color: white;
+	font-size: 16px;
+	cursor: pointer;
+	transition: background 0.3s;
+}
+
+.button-container {
+	margin-top: 40px; display : flex;
+	justify-content: center; /* Centers horizontally */
+	align-items: center;
+	display: flex; /* Centers vertically */
+}
+
+button:hover {
+	background-color: #388e3c;
+}
+
+#productTable {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 15px;
+}
+
+#productTable th, #productTable td {
+	border: 1px solid #dee2e6;
+	padding: 10px;
+	text-align: center;
+}
+
+#productTable th {
+	background-color: #2e7d32;
+	color: white;
+}
+
+#totalAmount {
+	font-size: 18px;
+	font-weight: bold;
+	margin-top: 15px;
+}
+
+button[onclick="removeRow(this)"] {
+	background-color: #dc3545;
+}
+
+button[onclick="removeRow(this)"]:hover {
+	background-color: #a71d2a;
+}
+</style>
+
+</head>
+<body onload="fetchProducts()">
+	<h2>Generate Bill</h2>
+
+	<label>Customer Name: <input type="text" id="customerName"></label>
+	<label>Customer Email: <input type="email" id="customerEmail"></label>
+	<label>Customer Phone Number: <input type="text"
+		id="customerPhone"></label>
+	<label>Bill Date: <input type="date" id="billDate"></label>
+
+	<label>Payment Method: <select id="paymentMethod">
+			<option value="" disabled selected>Select Payment Method</option>
+			<option value="Cash">Cash</option>
+			<option value="UPI">UPI</option>
+	</select>
+	</label>
+
+	<h3>Products</h3>
+	<table id="productTable">
+		<thead>
+			<tr>
+				<th>Product</th>
+				<th>Quantity</th>
+				<th>Price (₹)</th>
+				<th>Total (₹)</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+
+	<h3 id="totalAmount">Total Amount: ₹0</h3>
+	<div class="button-container">
+		<button onclick="addProductRow()">➕ Add Product</button>
+		<button onclick="saveBill()">💾 Save Bill</button>
+		<button onclick="window.location.href='/bill/bill.html'">📜
+			View Bill</button>
+		<button onclick="window.location.href='/dashboard.html'">Back
+			to Dashboard</button>
+	</div>
+<script>
+      let products = [];
+        let customerName, customerEmail, customerPhone, billDate, paymentMethod;
+        let totalAmount = 0;
+        let productIds = [];
+        let quantities = [];
+        
+        async function fetchProducts() {
+            try {
+                const response = await fetch("http://localhost:9090/products/list");
+                products = await response.json();
+                console.log("Fetched products:", products);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        }
+
+        async function updateStock(productId, quantity) {
+            try {
+                const response = await fetch(`http://localhost:9090/products/${productId}/updateStock`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ stock: quantity })  // Send stock as JSON
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Error updating stock: ${errorData.message}`);
+                }
+
+                console.log(`Stock updated successfully for product ${productId}`);
+            } catch (error) {
+                console.error(`Error updating stock for product ${productId}:`, error);
+            }
+        }
+
+
+        async function populateDropdown() {
+            await fetchProducts();
+            return products.map(p => 
+                `<option value="${p.id}" data-price="${p.price}" data-stock="${p.stock}">
+                    ${p.name} (₹${p.price}, Stock: ${p.stock})
+                </option>`).join("");
+        }
+
+        async function addProductRow() {
+            const tbody = document.querySelector("#productTable tbody");
+            const row = document.createElement("tr");
+
+            const productOptions = await populateDropdown();
+
+            row.innerHTML = `
+                <td>
+                    <select onchange="updatePrice(this)">
+                        <option value="" disabled selected>Select Product</option>
+                        ${productOptions}
+                    </select>
+                </td>
+                <td><input type="number" min="1" value="1" onchange="updateTotal(this)" disabled></td>
+                <td class="price">₹0</td>
+                <td class="total">₹0</td>
+                <td><button onclick="removeRow(this)">❌ Remove</button></td>
+            `;
+            tbody.appendChild(row);
+        }
+
+        function updatePrice(select) {
+            const row = select.closest("tr");
+            const priceCell = row.querySelector(".price");
+            const totalCell = row.querySelector(".total");
+            const quantityInput = row.querySelector("input");
+
+            const price = parseFloat(select.selectedOptions[0].dataset.price);
+            priceCell.textContent = `₹${price}`;
+            quantityInput.disabled = false;
+            updateTotal(quantityInput);
+        }
+
+        function updateTotal(input) {
+            const row = input.closest("tr");
+            const price = parseFloat(row.querySelector(".price").textContent.replace("₹", ""));
+            const quantity = parseInt(input.value, 10);
+            row.querySelector(".total").textContent = `₹${price * quantity}`;
+            calculateTotalAmount();
+        }
+
+        function calculateTotalAmount() {
+            let total = 0;
+            document.querySelectorAll(".total").forEach(cell => {
+                total += parseFloat(cell.textContent.replace("₹", ""));
+            });
+            document.getElementById("totalAmount").textContent = `Total Amount: ₹${total}`;
+            return total;
+        }
+
+        function removeRow(button) {
+            button.closest("tr").remove();
+            calculateTotalAmount();
+        }
+
+        async function saveBill() {
+            let customerName = document.getElementById("customerName").value;
+            let customerEmail = document.getElementById("customerEmail").value;
+            let customerPhone = document.getElementById("customerPhone").value;
+            let billDate = document.getElementById("billDate").value;
+            let paymentMethod = document.getElementById("paymentMethod").value;
+
+            if (!customerName || !customerEmail || !billDate || !paymentMethod) {
+                alert("Please fill all details.");
+                return;
+            }
+
+            const rows = document.querySelectorAll("#productTable tbody tr");
+            const billProducts = [];
+            let totalAmount = 0;
+            let productIds = [];
+            let quantities = [];
+
+            for (const row of rows) {
+                const select = row.querySelector("select");
+                const quantity = parseInt(row.querySelector("input").value, 10);
+                const productId = parseInt(select.value, 10);
+                const productName = select.selectedOptions[0].text.split(" (")[0];
+                const price = parseFloat(row.querySelector(".price").textContent.replace("₹", ""));
+
+                billProducts.push({ id: productId, name: productName, quantity, price });
+                productIds.push(productId);
+                quantities.push(quantity);
+                totalAmount += price * quantity;
+
+                // Update stock in database
+                await updateStock(productId, quantity);
+            }
+
+            if (billProducts.length === 0) {
+                alert("Add at least one product.");
+                return;
+            }
+
+            localStorage.setItem("customerName", customerName);
+            localStorage.setItem("customerEmail", customerEmail);
+            localStorage.setItem("customerPhone", customerPhone);
+            localStorage.setItem("billDate", billDate);
+            localStorage.setItem("paymentMethod", paymentMethod);
+            localStorage.setItem("products", JSON.stringify(billProducts));
+            localStorage.setItem("totalAmount", totalAmount);
+            localStorage.setItem("productIds", JSON.stringify(productIds));
+            localStorage.setItem("quantities", JSON.stringify(quantities));
+
+            console.log("Customer Name:", customerName);
+            console.log("Customer Email:", customerEmail);
+            console.log("Total Amount:", totalAmount);
+            console.log("Payment Method:", paymentMethod);
+            console.log("Product IDs:", productIds);
+            console.log("Quantities:", quantities); 
+
+            if (paymentMethod === "UPI") {
+                window.location.href = window.location.origin + "/bill/razorPay.html?amount=" + totalAmount;
+            } else {
+                alert("Bill saved successfully!");
+            }
+
+            try {
+                const response = await fetch("http://localhost:9090/bills/save", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        customerName: customerName,
+                        customerEmail: customerEmail,
+                        customerPhone: customerPhone,
+                        totalAmount: parseFloat(totalAmount),
+                        paymentMethod: paymentMethod,
+                        productIds: productIds,  // Send as an array
+                        quantities: quantities   // Send as an array
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Error saving bill: ${errorData.message}`);
+                }
+
+                const data = await response.json();
+                console.log("Response from server:", data);
+                alert(data.message);
+            } catch (error) {
+                console.error("Error saving bill:", error);
+            }
+        }
+
+
+    </script>
+
+</body>
+</html>

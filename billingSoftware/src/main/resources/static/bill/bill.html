@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border: 2px solid #333;
+            background-color: #fdfdfd;
+        }
+        .bill-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .bill-header h2 {
+            margin: 0;
+            font-size: 22px;
+            color: #333;
+        }
+        .bill-header p {
+            margin: 3px 0;
+            font-size: 14px;
+            color: #555;
+        }
+        hr {
+            border: 0;
+            border-top: 2px dashed #888;
+            margin: 10px 0;
+        }
+        .customer-details, .bill-details {
+            font-size: 14px;
+        }
+        .bill-details {
+            text-align: right;
+        }
+        .table-container {
+            margin-top: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .total-section {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        .total-section strong {
+            font-size: 18px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #666;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px;
+            font-size: 14px;
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #388e3c;
+        }
+        .back-button {
+            background-color: #2e7d32;
+        }
+        .back-button:hover {
+            background-color: #388e3c;
+        }
+        @media print {
+            .button-container {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bill-header">
+        <h2>XYZ Grocery Store</h2>
+        <p>123 Main Street, Pune, India</p>
+        <p>Phone: +91 98765 43210 | Email: xyzstore@email.com</p>
+        <p><strong>Shop Timings:</strong> 8:00 AM - 9:00 PM</p>
+    </div>
+
+    <hr>
+
+    <div class="customer-details">
+        <p><strong>Customer Name:</strong> <span id="customerName"></span></p>
+        <p><strong>Email:</strong> <span id="customerEmail"></span></p>
+        <p><strong>Phone:</strong> <span id="customerPhone"></span></p>
+    </div>
+
+    <div class="bill-details">
+        <p><strong>Bill No:</strong> #<span id="billNumber"></span></p>
+        <p><strong>Date:</strong> <span id="billDate"></span></p>
+    </div>
+
+    <hr>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Qty</th>
+                    <th>Price (₹)</th>
+                    <th>Total (₹)</th>
+                </tr>
+            </thead>
+            <tbody id="billItems"></tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="total-section"><strong>Grand Total</strong></td>
+                    <td class="total-section"><strong>₹<span id="grandTotal">0</span></strong></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="button-container">
+        <button onclick="window.print()">🖨️ Print Bill</button>
+        <button class="back-button" onclick="window.location.href='/dashboard.html'">Back to Dashboard</button>
+    </div>
+
+    <div class="footer">
+        <p>Thank you for shopping with us! Visit again.</p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log("🔎 Retrieving bill details from localStorage...");
+
+            const customerName = localStorage.getItem("customerName");
+            const customerEmail = localStorage.getItem("customerEmail");
+            const customerPhone = localStorage.getItem("customerPhone");
+            const billDate = localStorage.getItem("billDate");
+            const storedProducts = localStorage.getItem("products");
+
+            if (!customerName || !customerEmail || !billDate || !storedProducts) {
+                console.error("❌ Missing bill data in localStorage.");
+                return;
+            }
+
+            document.getElementById("customerName").textContent = customerName;
+            document.getElementById("customerEmail").textContent = customerEmail;
+            document.getElementById("customerPhone").textContent = customerPhone;
+            document.getElementById("billDate").textContent = new Date(billDate).toLocaleDateString();
+
+            // Generate a random Bill Number
+            document.getElementById("billNumber").textContent = Math.floor(Math.random() * 900000) + 100000;
+
+            try {
+                const products = JSON.parse(storedProducts);
+                console.log("✅ Products retrieved:", products);
+
+                const billItems = document.getElementById("billItems");
+                let total = 0;
+
+                products.forEach(product => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${product.name}</td>
+                        <td>${product.quantity}</td>
+                        <td>₹${product.price.toFixed(2)}</td>
+                        <td>₹${(product.quantity * product.price).toFixed(2)}</td>
+                    `;
+                    billItems.appendChild(row);
+                    total += product.quantity * product.price;
+                });
+
+                document.getElementById("grandTotal").textContent = total.toFixed(2);
+            } catch (error) {
+                console.error("❌ Error parsing stored products:", error);
+            }
+        });
+    </script>
+
+</body>
+</html>
+
+
+

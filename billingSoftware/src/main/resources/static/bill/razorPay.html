@@ -1,0 +1,281 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+    /* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Container Box */
+.container {
+    background: white;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Headings */
+h2 {
+    color: #2e7d32;
+    margin-bottom: 20px;
+}
+
+/* Text */
+p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+/* Amount Display */
+.amount {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2e7d32;
+    margin-bottom: 20px;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 12px 18px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Primary Button */
+.btn-primary {
+    background-color: #2e7d32;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #276a2b;
+}
+
+/* Secondary Button */
+.btn-secondary {
+    background-color: #ccc;
+    color: black;
+}
+
+.btn-secondary:hover {
+    background-color: #aaa;
+}
+    
+    </style>
+</head>
+<body>
+    <h2>Billing System</h2>
+    <button id="pay-button">Pay Now</button>
+    <button onclick="window.history.back()">Go Back</button>
+    
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const amount = params.get("amount") || 1000;
+
+document.getElementById('pay-button').onclick = function () {
+    fetch(`http://localhost:9090/api/payments/create-order?amount=${amount}&currency=INR`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(order => {
+        const options = {
+            key: "rzp_test_ixLoFMWgNZQml2",
+            amount: order.amount,
+            currency: order.currency,
+            name: "Your Company",
+            description: "Test Transaction",
+            order_id: order.id,
+            handler: function (response) {
+                // Extract payment details
+                const paymentData = {
+                    paymentId: response.razorpay_payment_id,
+                    orderId: response.razorpay_order_id,
+                    signature: response.razorpay_signature,
+                    amount: order.amount,
+                    currency: order.currency,
+                    paymentMethod: "Razorpay" // You can get the actual method from backend
+                };
+
+                // Send payment details to backend for saving in DB
+                fetch("http://localhost:9090/api/payments/save", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(paymentData)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+                })
+                .catch(error => console.error("Error saving payment details:", error));
+            },
+            theme: {
+                color: "#3399cc"
+            }
+        };
+        const rzp = new Razorpay(options);
+        rzp.open();
+    })
+    .catch(error => console.error("Error creating Razorpay order:", error));
+};
+
+</script>
+</body>
+</html>
+ -->
+ 
+ 
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Container Box */
+        .container {
+            background: white;
+            padding: 30px;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* Headings */
+        h2 {
+            color: #2e7d32;
+            margin-bottom: 20px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 12px 18px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 5px;
+            width: 100%;
+        }
+
+        /* Pay Now Button */
+        .btn-primary {
+            background-color: #2e7d32;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #276a2b;
+        }
+
+        /* Go Back Button */
+        .btn-secondary {
+            background-color: #ccc;
+            color: black;
+        }
+
+        .btn-secondary:hover {
+            background-color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Billing System</h2>
+        <button id="pay-button" class="btn btn-primary">Pay Now</button>
+        <button onclick="window.history.back()" class="btn btn-secondary">Go Back</button>
+    </div>
+    
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const amount = params.get("amount") || 1000;
+
+        document.getElementById('pay-button').onclick = function () {
+            fetch(`http://localhost:9090/api/payments/create-order?amount=${amount}&currency=INR`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(order => {
+                const options = {
+                    key: "rzp_test_ixLoFMWgNZQml2",
+                    amount: order.amount,
+                    currency: order.currency,
+                    name: "Your Company",
+                    description: "Test Transaction",
+                    order_id: order.id,
+                    handler: function (response) {
+                        const paymentData = {
+                            paymentId: response.razorpay_payment_id,
+                            orderId: response.razorpay_order_id,
+                            signature: response.razorpay_signature,
+                            amount: order.amount,
+                            currency: order.currency,
+                            paymentMethod: "Razorpay"
+                        };
+
+                        fetch("http://localhost:9090/api/payments/save", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(paymentData)
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+                        })
+                        .catch(error => console.error("Error saving payment details:", error));
+                    },
+                    theme: {
+                        color: "#2e7d32"
+                    }
+                };
+                const rzp = new Razorpay(options);
+                rzp.open();
+            })
+            .catch(error => console.error("Error creating Razorpay order:", error));
+        };
+    </script>
+</body>
+</html>
+ 

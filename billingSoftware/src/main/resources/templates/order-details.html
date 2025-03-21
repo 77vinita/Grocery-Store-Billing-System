@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            background-color: red;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: darkred;
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            background-color: blue;
+            color: white;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Order Details</h2>
+
+    <p th:if="${error}" style="color: red;" th:text="${error}"></p>
+    <p th:if="${success}" style="color: green;" th:text="${success}"></p>
+
+    <table>
+        <tr>
+            <th>Order ID</th>
+            <td th:text="${order.id}"></td>
+        </tr>
+        <tr>
+            <th>Product Name</th>
+            <td th:text="${order.product.name}"></td>
+        </tr>
+        <tr>
+            <th>Quantity</th>
+            <td th:text="${order.quantity}"></td>
+        </tr>
+        <tr>
+            <th>Price Per Unit</th>
+            <td th:text="${order.product.price}"></td>
+        </tr>
+        <tr>
+            <th>Total Price</th>
+            <td th:text="${order.quantity * order.product.price}"></td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td th:text="${order.status}"></td>
+        </tr>
+    </table>
+
+    <br>
+    <a href="/orders">Back to Orders</a>
+
+    <!-- Refund button only visible if order is not already refunded -->
+    <form th:if="${order.status != 'REFUNDED'}" th:action="@{/orders/refund/{id}(id=${order.id})}" method="post">
+        <button type="submit">Refund Order</button>
+    </form>
+
+</body>
+</html>

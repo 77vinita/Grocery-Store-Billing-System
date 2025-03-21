@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Product</title>
+    <style>
+    body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 450px;
+            background: white;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin: 10px 0 5px;
+            text-align: left;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #218838;
+        }
+        a {
+            display: block;
+            margin-top: 10px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+                button {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            font-size: 16px;
+            margin-top: 15px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #276a2b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Edit Product</h2>
+        <form th:action="@{/products/update/{id}(id=${product.id})}" method="post" th:object="${product}">
+            <input type="hidden" th:field="*{id}">
+            
+            <label>Name:</label>
+            <input type="text" th:field="*{name}" required>
+
+            <label>Category:</label>
+            <input type="text" th:field="*{category}" required>
+
+            <label>Price:</label>
+            <input type="number" th:field="*{price}" required>
+
+            <label>Stock:</label>
+            <input type="number" th:field="*{stock}" required>
+
+            <button type="submit">Update</button>
+        </form>
+        <button class="back-button" onclick="window.location.href='/dashboard.html'">Back to Dashboard</button>
+    </div>
+</body>
+</html>
