@@ -20,6 +20,7 @@ public class AdminController {
 
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password, Model model) {
+    	System.out.println(username+" "+password);
         if (adminService.validateAdmin(username, password) != null) {
             return "redirect:/admin/dashboard";
         } else {

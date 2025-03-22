@@ -1,35 +1,3 @@
-<!-- <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Add Product</title>
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-    <h2>Add Product</h2>
-    <form th:action="@{/products/save}" method="post" th:object="${product}">
-        <label>Name:</label>
-        <input type="text" th:field="*{name}" required>
-        
-        <label>Price:</label>
-        <input type="number" th:field="*{price}" step="1" required>
-
-        <label>Stock:</label>
-        <input type="number" th:field="*{stock}" required>
-
-        <label>Category:</label>
-        <input type="text" th:field="*{category}">
-
-        <label>Description:</label>
-        <textarea th:field="*{description}"></textarea>
-
-        <button type="submit">Save</button>
-    </form>
-    <a href="/products/list-view">Back to Product List</a>
-</body>
-</html>
- -->
-
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
