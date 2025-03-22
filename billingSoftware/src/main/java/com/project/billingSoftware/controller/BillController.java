@@ -124,7 +124,7 @@ public class BillController {
         order.setCustomerPhone(customerPhone);
         order.setTotalAmount(totalAmount);
         order.setDate(LocalDateTime.now());
-        order.setStatus(OrderStatus.PENDING);
+        order.setStatus(OrderStatus.PAID);
 
         Order savedOrder = orderService.saveOrder(order);
         System.out.println("Saved Order ID: " + savedOrder.getId());

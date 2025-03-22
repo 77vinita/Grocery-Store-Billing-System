@@ -25,7 +25,9 @@ public class Order {
 	@ManyToOne
 	@JoinColumn(name = "bill_id")
 	private Bill bill; // Order is linked to a bill
-
+	
+ 
+	
 	// Constructors
 	public Order() {
 	}

@@ -137,7 +137,7 @@
                 <td th:text="${order.totalAmount}"></td>
                 <td th:text="${order.status}"></td>
                 <td>
-                    <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-view">View</a>
+                    <!-- <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-view">View</a> -->
                     <a th:href="@{/orders/delete/{id}(id=${order.id})}" class="btn btn-delete" onclick="return confirm('Are you sure?')">Delete</a>
                     <a th:href="@{/orders/refund/{id}(id=${order.id})}" class="btn btn-refund">Refund</a>
                 </td>

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -59,6 +60,38 @@ public class OrderController {
 //        return "order-details";
 //    }
 
+    @GetMapping("/{id}")
+    public String viewOrder(@PathVariable Long id, Model model) {
+        Order order = orderService.getOrderById(id);
+        
+        if (order == null) {
+            return "redirect:/orders"; // Redirect if order not found
+        }
+
+        System.out.println("Order ID: " + order.getId());
+        System.out.println("Product ID: " + order.getProductId()); // Debugging line
+
+        // Check if product ID is null **before** calling findById()
+        if (order.getProductId() == null) {
+            model.addAttribute("error", "Product ID is missing for this order.");
+            model.addAttribute("order", order); // Still pass the order data
+            return "order-details"; // Show error message in UI
+        }
+        System.out.println("Order ID: " + order.getId());
+        System.out.println("Product ID: " + order.getProductId()); // Debugging line
+
+        // Fetch product only if ID is not null
+        Product product = productRepository.findById(order.getProductId()).orElse(null);
+
+        if (product == null) {
+            model.addAttribute("error", "Product not found.");
+        }
+
+        model.addAttribute("order", order);
+        model.addAttribute("product", product);
+
+        return "order-details";
+    }
     
     
     @PostMapping("/bills/save")
@@ -98,43 +131,43 @@ public class OrderController {
         return "orders"; // Returns filtered orders list
     }
     
-//    @PostMapping("/refund/{id}")
-//    public String refundOrder(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-//        Order order = orderRepository.findById(id).orElse(null);
-//        
-//        if (order == null) {
-//            redirectAttributes.addFlashAttribute("error", "Order not found!");
-//            return "redirect:/orders";
-//        }
-//
-//        if (order.getStatus() == OrderStatus.REFUNDED) {
-//            redirectAttributes.addFlashAttribute("error", "Order is already refunded!");
-//            return "redirect:/orders";
-//        }
-//
-//        // ✅ Validate product existence before updating stock
-//        if (order.getProductId() != null) {
-//            Product product = productRepository.findById(order.getProductId()).orElse(null);
-//            
-//            if (product != null) {
-//                product.setStock(product.getStock() + order.getQuantity());
-//                productRepository.save(product);
-//            }
-//        }
-//
-//        // ✅ Update order status to "Refunded"
-//        order.setStatus(OrderStatus.REFUNDED);
-//        orderRepository.save(order);
-//        
-//        redirectAttributes.addFlashAttribute("success", "Order refunded successfully!");
-//        return "redirect:/orders"; // ✅ Redirect with success message
-//    }
-    
     @GetMapping("/refund/{id}")
-    public String refundOrder(@PathVariable Long id) {
-        orderService.updateOrderStatus(id, OrderStatus.REFUNDED);
-        return "redirect:/orders";
+    public String refundOrder(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Order order = orderRepository.findById(id).orElse(null);
+        
+        if (order == null) {
+            redirectAttributes.addFlashAttribute("error", "Order not found!");
+            return "redirect:/orders";
+        }
+
+        if (order.getStatus() == OrderStatus.REFUNDED) {
+            redirectAttributes.addFlashAttribute("error", "Order is already refunded!");
+            return "redirect:/orders";
+        }
+
+        // ✅ Validate product existence before updating stock
+        if (order.getProductId() != null) {
+            Product product = productRepository.findById(order.getProductId()).orElse(null);
+            
+            if (product != null) {
+                product.setStock(product.getStock() + order.getQuantity());
+                productRepository.save(product);
+            }
+        }
+
+        // ✅ Update order status to "Refunded"
+        order.setStatus(OrderStatus.REFUNDED);
+        orderRepository.save(order);
+        
+        redirectAttributes.addFlashAttribute("success", "Order refunded successfully!");
+        return "redirect:/orders"; // ✅ Redirect with success message
     }
+    
+//    @GetMapping("/refund/{id}")
+//    public String refundOrder(@PathVariable Long id) {
+//        orderService.updateOrderStatus(id, OrderStatus.REFUNDED);
+//        return "redirect:/orders";
+//    }
 
 
 
