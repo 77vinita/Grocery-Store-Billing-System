@@ -14,45 +14,37 @@
         /* Full-Screen Background */
         body {
             background-color: #f7f9fc;
-            padding-top: 80px; /* Push content down to avoid overlap with navbar */
+            padding-top: 80px;
+            text-align: center;
         }
 
         /* Header Styling */
         header {
-            text-align: center;
             background: white;
             padding: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        header .logo {
-            height: 50px;
-            margin-bottom: 10px;
-        }
-
         h1 {
             color: #2e7d32;
-            font-size: 24px;
+            font-size: 32px;
         }
 
         /* Navigation Bar */
         nav {
             width: 100%;
-            background: #2e7d32; /* Green color */
+            background: #2e7d32;
             padding: 15px 0;
-            text-align: center;
             position: fixed;
             top: 0;
             left: 0;
             z-index: 1000;
-            display: flex;
-            justify-content: center;
         }
 
         nav a {
             color: white;
             text-decoration: none;
-            font-size: 18px;
+            font-size: 20px;
             margin: 0 15px;
             padding: 10px 15px;
             display: inline-block;
@@ -64,75 +56,49 @@
             border-radius: 5px;
         }
 
-        /* Logout Button */
-        .logout-button {
-            background: #d32f2f;
-            padding: 10px 15px;
-            border-radius: 5px;
-        }
-
-        .logout-button:hover {
-            background: #b71c1c;
-        }
-
-        /* Announcement Bar */
-        .announcement {
-            background: #d32f2f;
-            color: white;
-            padding: 5px;
-            text-align: center;
+        /* Marquee Reminder */
+        .marquee-container {
+            width: 100%;
+            background: #f8d7da;
+            color: #721c24;
+            font-size: 18px;
             font-weight: bold;
+            padding: 10px;
+            position: fixed;
+            top: 60px;
+            z-index: 999;
+            border-bottom: 1px solid #f5c6cb;
         }
 
-        .announcement marquee {
-            font-size: 18px;
-        }
-
-        /* Page Content */
-        section {
-            text-align: center;
-            padding: 40px;
-        }
-
-        h2 {
-            font-size: 28px;
+        /* Welcome Message */
+        .typing-text {
+            font-size: 36px;
+            font-weight: bold;
             color: #2e7d32;
-            margin-bottom: 15px;
+            margin-top: 80px;
+            height: 50px;
         }
 
-        p {
-            font-size: 18px;
-            color: #555;
-        }
-
-        /* Dashboard Grid Layout */
-        .dashboard-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 40px;
-            max-width: 1000px;
-            margin: auto;
+        /* Centered Dashboard Content */
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
         }
 
         .card {
             background: white;
-            padding: 20px;
+            padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             text-align: center;
+            width: 400px;
         }
 
-        .card h3 {
-            color: #2e7d32;
-            margin-bottom: 10px;
-        }
-
-        .card p {
-            color: #666;
-            font-size: 14px;
-        }
-
+        /* To-Do List Styling */
         .todo-list ul {
             list-style: none;
             padding: 0;
@@ -140,19 +106,20 @@
 
         .todo-list li {
             background: #e8f5e9;
-            padding: 8px;
-            margin: 5px 0;
-            border-radius: 4px;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 18px;
         }
 
         .todo-list button {
             background: #d32f2f;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 7px 12px;
             border-radius: 4px;
             cursor: pointer;
         }
@@ -161,52 +128,49 @@
             background: #b71c1c;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .dashboard-content {
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            }
+        /* Current Date & Time Styling */
+        #datetime p {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2e7d32;
         }
     </style>
 </head>
-<body class="dashboard">
-    <header>
-        <!-- <img src="/images/logo.png" alt="Grocery Logo" class="logo"> -->
-        <h1>Grocery Store Admin</h1>
-    </header>
-    
+<body>
+    <!-- Navbar -->
     <nav>
         <a href="/home.html">Home</a>
         <a href="/products">Products</a>
         <a href="/orders">Orders</a>
         <a href="/bills/generate">Generate Bill</a>
         <a href="/bills/view">View Bills</a>
-        <a href="#" onclick="logout()" class="logout-button">Logout</a>
+        <a href="#" onclick="logout()">Logout</a>
     </nav>
 
-    <div class="announcement">
-        <marquee> Store maintenance on Sunday at 1 PM &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Database Backup: Automatic backup scheduled for every Friday at 11:59 PM.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sales Target Achieved! Congratulations! Weekly sales goal exceeded by 15%.</marquee>
-        <marquee></marquee>
+    <!-- Marquee Reminder -->
+    <div class="marquee-container">
+        <marquee behavior="scroll" direction="left">⚠️ Reminder: Review Pending Orders | Check Inventory Stock | Update Product Prices | Process Refund Requests ⚠️</marquee>
     </div>
 
-    <section>
-        <h2>Welcome, Admin!</h2>
-        <p>Manage products, orders, and generate bills from here.</p>
-    </section>
+    <!-- Welcome Message -->
+    <div class="typing-text" id="typing-text"></div>
 
-    <section class="dashboard-content">
+    <!-- Centered Dashboard Content -->
+    <div class="dashboard-container">
+        <!-- To-Do List -->
         <div class="card todo-list">
-            <h3>To-Do List</h3>
+            <h2>To-Do List</h2>
             <input type="text" id="todo-input" placeholder="Add a task...">
             <button onclick="addTask()">Add</button>
             <ul id="todo-items"></ul>
         </div>
 
+        <!-- Current Date & Time -->
         <div class="card" id="datetime">
-            <h3>Current Date & Time</h3>
+            <h2>Current Date & Time</h2>
             <p id="time"></p>
         </div>
-    </section>
+    </div>
 
     <script>
         function logout() {
@@ -235,7 +199,33 @@
             document.getElementById("time").innerText = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
         }
         setInterval(updateTime, 1000);
+
+        // Typing Animation
+        const textElement = document.getElementById("typing-text");
+        const messages = ["Welcome, Admin!", "Manage Your Store Efficiently", "Keep Everything Organised"];
+        let messageIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function typeEffect() {
+            let currentMessage = messages[messageIndex];
+            let displayedText = isDeleting ? currentMessage.substring(0, charIndex - 1) : currentMessage.substring(0, charIndex + 1);
+            textElement.innerText = displayedText;
+            textElement.style.borderRight = "2px solid #2e7d32"; // Blinking cursor effect
+
+            if (!isDeleting && charIndex === currentMessage.length) {
+                setTimeout(() => isDeleting = true, 1000);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                messageIndex = (messageIndex + 1) % messages.length;
+            }
+
+            charIndex += isDeleting ? -1 : 1;
+            setTimeout(typeEffect, isDeleting ? 100 : 200);
+        }
+
+        document.addEventListener("DOMContentLoaded", typeEffect);
     </script>
 </body>
 </html>
- 
+  

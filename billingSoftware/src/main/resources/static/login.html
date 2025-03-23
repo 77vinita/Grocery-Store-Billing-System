@@ -1,0 +1,334 @@
+<!-- <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Admin Login</title>
+<link rel="stylesheet" href="/css/styles.css">
+<style>
+/* Global reset */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Roboto', Arial, sans-serif;
+}
+
+/* Centering the login container properly */
+body {
+	background-color: #f7f9fc;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Background with a soft green tint for grocery feel */
+.login-page {
+	background-image: linear-gradient(rgba(46, 125, 50, 0.1),
+		rgba(46, 125, 50, 0.1)), url('/images/grocery-background.jpg');
+	background-size: cover;
+	background-position: center;
+}
+
+/* Login container styles */
+.login-container {
+	background-color: white;
+	width: 400px;
+	padding: 40px;
+	border-radius: 10px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+/* Logo styling */
+.logo {
+	width: 120px;
+	margin-bottom: 20px;
+}
+
+/* Heading with a friendly green tone */
+h2 {
+	color: #2e7d32; /* Grocery store green */
+	margin-bottom: 30px;
+	font-weight: 600;
+}
+
+/* Form layout */
+form {
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	width: 100%;
+}
+
+/* Input fields */
+input[type="text"], input[type="password"] {
+	width: 100%;
+	padding: 14px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	font-size: 16px;
+	transition: all 0.3s ease;
+}
+
+/* Focus effect for better UX */
+input[type="text"]:focus, input[type="password"]:focus {
+	border-color: #2e7d32;
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+}
+
+/* Login button */
+button[type="submit"] {
+	background-color: #2e7d32;
+	color: white;
+	border: none;
+	padding: 14px;
+	border-radius: 6px;
+	font-size: 17px;
+	cursor: pointer;
+	transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+/* Button hover effect */
+button[type="submit"]:hover {
+	background-color: #1b5e20;
+	transform: scale(1.02);
+}
+
+/* Error message styling */
+.error {
+	color: #d32f2f;
+	margin-top: 16px;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media ( max-width : 480px) {
+	.login-container {
+		width: 90%;
+		padding: 30px;
+	}	
+}
+</style>
+</head>
+<body class="login-page">
+	<div class="login-container">
+		<h2>Admin Login</h2>
+		<form action="/admin/login" method="post">
+			<input type="text" name="username" placeholder="Username" required>
+			<input type="password" name="password" placeholder="Password"
+				required>
+			<button type="submit">Login</button>
+		</form>
+		<p th:if="${error}" th:text="${error}" class="error"></p>
+	</div>
+</body>
+</html> -->
+
+
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Admin Login</title>
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<style>
+/* Global reset */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Roboto', Arial, sans-serif;
+}
+
+/* Centering the whole content */
+body {
+	background-color: #f7f9fc;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+/* Typing effect container */
+.typing-container {
+	font-size: 30px;
+	font-weight: bold;
+	color: #2e7d32;
+	margin-bottom: 20px;
+	text-align: center;
+	white-space: nowrap;
+	overflow: hidden;
+	border-right: 4px solid #2e7d32;
+	width: max-content;
+	animation: blink 1s infinite; /* Slowed down blinking */
+}
+
+/* Blinking cursor effect */
+@keyframes blink {
+	50% { border-color: transparent; }
+}
+
+/* Login container */
+.login-container {
+	background-color: white;
+	width: 400px;
+	padding: 40px;
+	border-radius: 10px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+/* Heading */
+h2 {
+	color: #2e7d32;
+	margin-bottom: 20px;
+	font-weight: 600;
+}
+
+/* Form layout */
+form {
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	width: 100%;
+}
+
+/* Input field container */
+.input-container {
+	display: flex;
+	align-items: center;
+	background: white;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	padding: 12px;
+	transition: all 0.3s ease;
+}
+
+/* Input field */
+input {
+	border: none;
+	outline: none;
+	font-size: 16px;
+	width: 100%;
+	padding-left: 10px;
+}
+
+/* Focus effect */
+.input-container:focus-within {
+	border-color: #2e7d32;
+	box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+}
+
+/* Icon styles */
+.input-container i {
+	color: #2e7d32;
+	font-size: 18px;
+}
+
+/* Login button */
+button[type="submit"] {
+	background-color: #2e7d32;
+	color: white;
+	border: none;
+	padding: 14px;
+	border-radius: 6px;
+	font-size: 17px;
+	cursor: pointer;
+	transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+/* Button hover */
+button[type="submit"]:hover {
+	background-color: #1b5e20;
+	transform: scale(1.02);
+}
+
+/* Error message */
+.error {
+	color: #d32f2f;
+	margin-top: 16px;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+	.login-container {
+		width: 90%;
+		padding: 30px;
+	}
+}
+</style>
+</head>
+<body>
+
+	<!-- Typing Animation -->
+	<div class="typing-container" id="typing-text"></div>
+
+	<div class="login-container">
+		<h2>Admin Login</h2>
+		<form action="/admin/login" method="post">
+			<!-- Username Input with Icon -->
+			<div class="input-container">
+				<i class="fas fa-user"></i>
+				<input type="text" name="username" placeholder="Username" required>
+			</div>
+
+			<!-- Password Input with Icon -->
+			<div class="input-container">
+				<i class="fas fa-lock"></i>
+				<input type="password" name="password" placeholder="Password" required>
+			</div>
+
+			<!-- Submit Button -->
+			<button type="submit">Login</button>
+		</form>
+		<p th:if="${error}" th:text="${error}" class="error"></p>
+	</div>
+
+	<script>
+		const textElement = document.getElementById("typing-text");
+		const text = "Billing System";
+		let index = 0;
+		let isDeleting = false;
+		let typingSpeed = 150; // Slower typing speed
+		let deletingSpeed = 100; // Slower deleting speed
+		let pauseTime = 2000; // Pause before deleting & retyping
+
+		function typeEffect() {
+			if (!isDeleting) {
+				textElement.textContent = text.substring(0, index);
+				index++;
+				if (index > text.length) {
+					isDeleting = true;
+					setTimeout(typeEffect, pauseTime); // Pause before deleting
+					return;
+				}
+			} else {
+				textElement.textContent = text.substring(0, index);
+				index--;
+				if (index === 0) {
+					isDeleting = false;
+					setTimeout(typeEffect, pauseTime); // Pause before retyping
+					return;
+				}
+			}
+			setTimeout(typeEffect, isDeleting ? deletingSpeed : typingSpeed);
+		}
+
+		typeEffect();
+	</script>
+
+</body>
+</html>
