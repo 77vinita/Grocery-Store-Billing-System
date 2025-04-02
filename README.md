@@ -44,7 +44,7 @@ While initializing the Spring Boot project using **Spring Initializr**, the foll
      mvn spring-boot:run
      ```
 5. **Access the system:**
-   - Open **http://localhost:8080** in your browser.
+   - Open **http://localhost:9090/login.html** in your browser.
    - Use the following credentials to log in:
      - **Username:** `admin`
      - **Password:** `admin123`
