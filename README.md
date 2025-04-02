@@ -31,7 +31,7 @@ While initializing the Spring Boot project using **Spring Initializr**, the foll
 ## Installation & Setup 🏗️
 1. **Clone the repository**:
    ```sh
-   git clone https://github.com/YOUR_GITHUB_USERNAME/Grocery-Store-Billing-System.git
+   git clone https://github.com/77vinita/Grocery-Store-Billing-System.git
    ```
 2. **Open in Eclipse** and import as a **Maven Project**.
 3. **Configure the Database:**
